@@ -1,8 +1,20 @@
-Code Naming Guidlines
+# QA-USA Python Automation 🚕🧪
 
-- Variable names are written in snake_case and are descriptive of their purpose.
-- Constants are written in uppercase
-- Comments are used to explain important blocks of code.
-- Code is organized in a modular manner, with reusable code blocks imported where necessary.
-- No unnecessary wait functions that make the test run longer than it should.
-- Follow a naming convention for test titles that starts with `test_` and provides a clear description of the test scenario. We provide test titles in the brief.
+This is an automated UI testing project using **Python**, **Selenium**, and **Pytest**, built for the UrbanRoutes web application.
+
+## 🔧 Tech Stack
+
+- Python 3.13
+- Selenium WebDriver
+- Pytest
+- ChromeDriver
+- Git + GitHub
+
+## 📁 Project Structure
+
+├── main.py # Contains the test cases using pytest
+├── pages.py # Page Object Model (POM) structure for the UrbanRoutes site
+├── helpers.py # Custom helper functions
+├── data.py # Static test data
+├── .gitignore # Files to exclude from version control
+└── README.md # You're reading it!
