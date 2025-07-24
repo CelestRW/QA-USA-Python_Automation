@@ -1,7 +1,7 @@
 import pytest
 import time
 from selenium import webdriver
-from selenium.webdriver import DesiredCapabilities
+from selenium.webdriver.chrome.options import Options
 
 from pages import UrbanRoutesPage
 import helpers
@@ -25,45 +25,79 @@ class TestUrbanRoutes:
 
         cls.page = UrbanRoutesPage(cls.driver)
 
+    def test_set_address(self):
+        self.driver.get(data.URBAN_ROUTES_URL)
+        routes_page = UrbanRoutesPage(self.driver)
+        routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
+
+        assert routes_page.get_from_address() == data.ADDRESS_FROM
+        assert routes_page.get_to_address() == data.ADDRESS_TO
+
+    def test_select_supportive_plan(self):
+        self.driver.get(data.URBAN_ROUTES_URL)
+        routes_page = UrbanRoutesPage(self.driver)
+        routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
+        routes_page.select_supportive_plan()
+
+        assert routes_page.is_supportive_plan_selected()
+
+    def test_fill_phone_number(self):
+        self.driver.get(data.URBAN_ROUTES_URL)
+        routes_page = UrbanRoutesPage(self.driver)
+        routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
+        routes_page.select_supportive_plan()
+        routes_page.enter_phone_number(data.PHONE_NUMBER)
+
+        assert routes_page.is_phone_verified()
+
+    def test_fill_card(self):
+        self.driver.get(data.URBAN_ROUTES_URL)
+        routes_page = UrbanRoutesPage(self.driver)
+        routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
+        routes_page.select_supportive_plan()
+        routes_page.enter_payment_method(data.CARD_NUMBER, data.CARD_CODE)
+
+        assert routes_page.is_card_linked()
+
+    def test_comment_for_driver(self):
+        self.driver.get(data.URBAN_ROUTES_URL)
+        routes_page = UrbanRoutesPage(self.driver)
+        routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
+        routes_page.select_supportive_plan()
+        routes_page.set_message_for_driver(data.MESSAGE_FOR_DRIVER)
+
+        assert routes_page.get_message_for_driver() == data.MESSAGE_FOR_DRIVER
+
+    def test_order_blanket_and_handkerchiefs(self):
+        self.driver.get(data.URBAN_ROUTES_URL)
+        routes_page = UrbanRoutesPage(self.driver)
+        routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
+        routes_page.select_supportive_plan()
+        routes_page.click_blanket_and_handkerchiefs_slider()
+
+        assert routes_page.is_blanket_and_handkerchiefs_selected()
+
+    def test_order_2_ice_creams(self):
+        self.driver.get(data.URBAN_ROUTES_URL)
+        routes_page = UrbanRoutesPage(self.driver)
+        routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
+        routes_page.select_supportive_plan()
+        routes_page.order_ice_cream(2)
+
+        assert routes_page.get_ice_cream_count() == 2
+
+    def test_car_search_modal_appears(self):
+        self.driver.get(data.URBAN_ROUTES_URL)
+        routes_page = UrbanRoutesPage(self.driver)
+        routes_page.set_route(data.ADDRESS_FROM, data.ADDRESS_TO)
+        routes_page.select_supportive_plan()
+        routes_page.enter_phone_number(data.PHONE_NUMBER)
+        routes_page.set_message_for_driver(data.MESSAGE_FOR_DRIVER)
+        routes_page.click_order_button()
+
+        assert routes_page.is_car_search_modal_visible()
+
+
     @classmethod
     def teardown_class(cls):
         cls.driver.quit()
-
-    def test_set_address(self):
-        self.page.set_from(data.address_from)
-        self.page.set_to(data.address_to)
-        self.page.click_call_a_taxi_button()
-        time.sleep(1)  # Optional delay to observe UI response
-
-    def test_select_plan(self):
-        self.page.select_supportive_plan()
-        assert self.page.is_supportive_plan_selected()
-
-    def test_fill_phone_number(self):
-        self.page.set_phone_number(data.phone_number)
-        self.page.set_sms_code("0000")  # Assuming fake/test code works
-        assert self.page.is_phone_number_set()
-
-    def test_fill_card(self):
-        self.page.click_add_card_button()
-        self.page.set_card_number(data.card_number)
-        self.page.set_card_expiry(data.card_expiry)
-        self.page.set_card_code(data.card_code)
-        self.page.click_link_button()
-        assert self.page.is_card_added()
-
-    def test_comment_for_driver(self):
-        self.page.set_message_for_driver(data.message_for_driver)
-        assert self.page.get_message_for_driver() == data.message_for_driver
-
-    def test_order_blanket_and_handkerchiefs(self):
-        self.page.click_blanket_and_handkerchiefs_slider()
-        assert self.page.is_blanket_and_handkerchiefs_selected()
-
-    def test_order_2_ice_creams(self):
-        self.page.order_ice_cream(2)
-        assert self.page.get_ice_cream_count() == 2
-
-    def test_car_search_modal_appears(self):
-        self.page.click_order_button()
-        assert self.page.is_car_search_modal_visible()
